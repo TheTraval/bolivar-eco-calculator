@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -84,6 +85,7 @@
             font-size: 17px;
             font-weight: bold;
             cursor: pointer;
+            margin-top: 8px;
         }
 
         button:hover {
@@ -103,6 +105,55 @@
             color: #1b5e20;
             margin-bottom: 0;
         }
+
+        /* Added language controls */
+        .language-control {
+            margin-bottom: 20px;
+        }
+
+        /* Added breakdown */
+        #breakdown {
+            display: none;
+            text-align: left;
+        }
+
+        #breakdown p {
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Print settings */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .language-control,
+            .calculator-card,
+            button {
+                display: none !important;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .header {
+                background: white;
+                color: black;
+                border: 1px solid #ccc;
+            }
+
+            .card {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+
+            #breakdown {
+                display: block !important;
+            }
+        }
     </style>
 </head>
 
@@ -110,25 +161,51 @@
 
     <div class="container">
 
-        <div class="header">
-            <h1>Bolívar Eco-Calculator</h1>
+        <!-- LANGUAGE SELECTOR -->
+        <div class="language-control">
+            <label for="language">Language / Idioma:</label>
+
+            <select id="language" onchange="changeLanguage()">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+            </select>
         </div>
 
-        <div class="card">
-            <h2>Transportation</h2>
 
-            <label for="transport">
+        <div class="header">
+            <h1 id="title">Bolívar Eco-Calculator</h1>
+        </div>
+
+
+        <!-- CALCULATOR -->
+        <div class="card calculator-card">
+
+            <h2 id="transportTitle">Transportation</h2>
+
+            <label for="transport" id="transportLabel">
                 How do you travel to school?
             </label>
 
             <select id="transport">
-                <option value="car">Private Car</option>
-                <option value="bus">Bus</option>
-                <option value="carpool">Carpool</option>
-                <option value="walk">Walking / Bicycle</option>
+                <option value="car" id="carOption">
+                    Private Car
+                </option>
+
+                <option value="bus" id="busOption">
+                    Bus
+                </option>
+
+                <option value="carpool" id="carpoolOption">
+                    Carpool
+                </option>
+
+                <option value="walk" id="walkOption">
+                    Walking / Bicycle
+                </option>
             </select>
 
-            <label for="paper">
+
+            <label for="paper" id="paperLabel">
                 Sheets of paper used per day:
             </label>
 
@@ -139,32 +216,79 @@
                 value="0"
             >
 
-            <label for="recycling">
+
+            <label for="recycling" id="recyclingLabel">
                 Level of recycling:
             </label>
 
             <select id="recycling">
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
+
+                <option value="low" id="lowOption">
+                    Low
+                </option>
+
+                <option value="medium" id="mediumOption">
+                    Medium
+                </option>
+
+                <option value="high" id="highOption">
+                    High
+                </option>
+
             </select>
 
-            <button onclick="calculateImpact()">
+
+            <button onclick="calculateImpact()" id="calculateButton">
                 Calculate
             </button>
+
         </div>
 
+
+        <!-- RESULTS -->
         <div class="card result">
-            <h2>Results</h2>
+
+            <h2 id="resultsTitle">
+                Results
+            </h2>
 
             <p id="result">
                 Your weekly CO₂ emissions will appear here.
             </p>
+
+            <!-- ITEMIZED BREAKDOWN -->
+            <div id="breakdown">
+
+                <h3 id="breakdownTitle">
+                    Itemized Breakdown
+                </h3>
+
+                <p id="transportResult"></p>
+
+                <p id="paperResult"></p>
+
+                <p id="recyclingResult"></p>
+
+                <p id="totalResult"></p>
+
+            </div>
+
+            <!-- PRINT BUTTON -->
+            <button onclick="printReport()" id="printButton">
+                Print / Save as PDF
+            </button>
+
         </div>
 
     </div>
 
+
     <script>
+
+        // =====================================================
+        // EXISTING CALCULATOR FUNCTIONALITY
+        // =====================================================
+
         function calculateImpact() {
 
             // -------------------------
@@ -175,7 +299,6 @@
 
             let dailyTransportCO2 = 0;
 
-            // Estimated CO2 per school day in kg
             if (transport === "car") {
                 dailyTransportCO2 = 4.6;
             } 
@@ -189,7 +312,6 @@
                 dailyTransportCO2 = 0;
             }
 
-            // 5 school days per week
             const weeklyTransportCO2 = dailyTransportCO2 * 5;
 
 
@@ -197,22 +319,24 @@
             // PAPER
             // -------------------------
 
-            const paper = Number(document.getElementById("paper").value);
+            const paper = Number(
+                document.getElementById("paper").value
+            );
 
-            // Estimated CO2 per sheet of paper
             const co2PerSheet = 0.005;
 
-            // Paper used during one school week
             const weeklyPaper = paper * 5;
 
-            const weeklyPaperCO2 = weeklyPaper * co2PerSheet;
+            const weeklyPaperCO2 =
+                weeklyPaper * co2PerSheet;
 
 
             // -------------------------
             // RECYCLING
             // -------------------------
 
-            const recycling = document.getElementById("recycling").value;
+            const recycling =
+                document.getElementById("recycling").value;
 
             let recyclingReduction = 0;
 
@@ -232,24 +356,257 @@
             // -------------------------
 
             const totalBeforeRecycling =
-                weeklyTransportCO2 + weeklyPaperCO2;
+                weeklyTransportCO2 +
+                weeklyPaperCO2;
 
             const recyclingSavings =
-                totalBeforeRecycling * recyclingReduction;
+                totalBeforeRecycling *
+                recyclingReduction;
 
             const totalCO2 =
-                totalBeforeRecycling - recyclingSavings;
+                totalBeforeRecycling -
+                recyclingSavings;
 
 
             // -------------------------
             // DISPLAY RESULT
             // -------------------------
 
-            document.getElementById("result").textContent =
-                "Estimated weekly CO₂ emissions: " +
-                totalCO2.toFixed(2) +
-                " kg";
+            const language =
+                document.getElementById("language").value;
+
+            if (language === "en") {
+
+                document.getElementById("result").textContent =
+                    "Estimated weekly CO₂ emissions: " +
+                    totalCO2.toFixed(2) +
+                    " kg";
+
+            } else {
+
+                document.getElementById("result").textContent =
+                    "Emisiones estimadas de CO₂ por semana: " +
+                    totalCO2.toFixed(2) +
+                    " kg";
+            }
+
+
+            // -------------------------
+            // ITEMIZED BREAKDOWN
+            // -------------------------
+
+            document.getElementById("breakdown").style.display =
+                "block";
+
+            updateBreakdown(
+                weeklyTransportCO2,
+                weeklyPaperCO2,
+                recyclingSavings,
+                totalCO2
+            );
         }
+
+
+        // =====================================================
+        // LANGUAGE SYSTEM
+        // =====================================================
+
+        function changeLanguage() {
+
+            const language =
+                document.getElementById("language").value;
+
+
+            if (language === "es") {
+
+                document.documentElement.lang = "es";
+
+                document.getElementById("title").textContent =
+                    "Calculadora Ecológica Bolívar";
+
+                document.getElementById("transportTitle").textContent =
+                    "Transporte";
+
+                document.getElementById("transportLabel").textContent =
+                    "¿Cómo viajas al colegio?";
+
+                document.getElementById("carOption").textContent =
+                    "Carro particular";
+
+                document.getElementById("busOption").textContent =
+                    "Bus";
+
+                document.getElementById("carpoolOption").textContent =
+                    "Carro compartido";
+
+                document.getElementById("walkOption").textContent =
+                    "Caminando / Bicicleta";
+
+                document.getElementById("paperLabel").textContent =
+                    "Hojas de papel utilizadas por día:";
+
+                document.getElementById("recyclingLabel").textContent =
+                    "Nivel de reciclaje:";
+
+                document.getElementById("lowOption").textContent =
+                    "Bajo";
+
+                document.getElementById("mediumOption").textContent =
+                    "Medio";
+
+                document.getElementById("highOption").textContent =
+                    "Alto";
+
+                document.getElementById("calculateButton").textContent =
+                    "Calcular";
+
+                document.getElementById("resultsTitle").textContent =
+                    "Resultados";
+
+                document.getElementById("breakdownTitle").textContent =
+                    "Desglose detallado";
+
+                document.getElementById("printButton").textContent =
+                    "Imprimir / Guardar como PDF";
+
+            } else {
+
+                document.documentElement.lang = "en";
+
+                document.getElementById("title").textContent =
+                    "Bolívar Eco-Calculator";
+
+                document.getElementById("transportTitle").textContent =
+                    "Transportation";
+
+                document.getElementById("transportLabel").textContent =
+                    "How do you travel to school?";
+
+                document.getElementById("carOption").textContent =
+                    "Private Car";
+
+                document.getElementById("busOption").textContent =
+                    "Bus";
+
+                document.getElementById("carpoolOption").textContent =
+                    "Carpool";
+
+                document.getElementById("walkOption").textContent =
+                    "Walking / Bicycle";
+
+                document.getElementById("paperLabel").textContent =
+                    "Sheets of paper used per day:";
+
+                document.getElementById("recyclingLabel").textContent =
+                    "Level of recycling:";
+
+                document.getElementById("lowOption").textContent =
+                    "Low";
+
+                document.getElementById("mediumOption").textContent =
+                    "Medium";
+
+                document.getElementById("highOption").textContent =
+                    "High";
+
+                document.getElementById("calculateButton").textContent =
+                    "Calculate";
+
+                document.getElementById("resultsTitle").textContent =
+                    "Results";
+
+                document.getElementById("breakdownTitle").textContent =
+                    "Itemized Breakdown";
+
+                document.getElementById("printButton").textContent =
+                    "Print / Save as PDF";
+            }
+
+
+            // Recalculate so the result changes language too
+            if (document.getElementById("breakdown").style.display === "block") {
+                calculateImpact();
+            }
+        }
+
+
+        // =====================================================
+        // ITEMIZED BREAKDOWN
+        // =====================================================
+
+        function updateBreakdown(
+            transportCO2,
+            paperCO2,
+            recyclingSavings,
+            totalCO2
+        ) {
+
+            const language =
+                document.getElementById("language").value;
+
+
+            if (language === "en") {
+
+                document.getElementById("transportResult").textContent =
+                    "Transportation: " +
+                    transportCO2.toFixed(2) +
+                    " kg CO₂/week";
+
+                document.getElementById("paperResult").textContent =
+                    "Paper: " +
+                    paperCO2.toFixed(3) +
+                    " kg CO₂/week";
+
+                document.getElementById("recyclingResult").textContent =
+                    "Recycling reduction: -" +
+                    recyclingSavings.toFixed(3) +
+                    " kg CO₂/week";
+
+                document.getElementById("totalResult").textContent =
+                    "TOTAL: " +
+                    totalCO2.toFixed(2) +
+                    " kg CO₂/week";
+
+            } else {
+
+                document.getElementById("transportResult").textContent =
+                    "Transporte: " +
+                    transportCO2.toFixed(2) +
+                    " kg CO₂/semana";
+
+                document.getElementById("paperResult").textContent =
+                    "Papel: " +
+                    paperCO2.toFixed(3) +
+                    " kg CO₂/semana";
+
+                document.getElementById("recyclingResult").textContent =
+                    "Reducción por reciclaje: -" +
+                    recyclingSavings.toFixed(3) +
+                    " kg CO₂/semana";
+
+                document.getElementById("totalResult").textContent =
+                    "TOTAL: " +
+                    totalCO2.toFixed(2) +
+                    " kg CO₂/semana";
+            }
+        }
+
+
+        // =====================================================
+        // PRINT / PDF
+        // =====================================================
+
+        function printReport() {
+
+            // Make sure the breakdown is visible
+            document.getElementById("breakdown").style.display =
+                "block";
+
+            // Open the browser's print dialog.
+            // The user can select "Save as PDF".
+            window.print();
+        }
+
     </script>
 
 </body>
