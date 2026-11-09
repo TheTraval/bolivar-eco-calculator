@@ -1,0 +1,152 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 40px 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #eaf6ec;
+    color: #1f3d2b;
+}
+
+.container {
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.header {
+    background: #2e7d32;
+    color: white;
+    padding: 30px;
+    border-radius: 18px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card h2 {
+    margin-top: 0;
+    color: #2e7d32;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+select,
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #b7d5bc;
+    border-radius: 10px;
+    font-size: 16px;
+    background: #f8fcf9;
+    margin-bottom: 20px;
+}
+
+select:focus,
+input:focus {
+    outline: none;
+    border-color: #2e7d32;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #388e3c;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+button:hover {
+    background: #2e7d32;
+}
+
+/* Added language controls */
+
+.language-control {
+    margin-bottom: 20px;
+}
+
+
+/* Added breakdown */
+
+.result {
+    text-align: center;
+}
+
+#result {
+    background: #e8f5e9;
+    padding: 20px;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #1b5e20;
+    margin-bottom: 0;
+}
+
+#breakdown {
+    display: none;
+    text-align: left;
+}
+
+#breakdown p {
+    padding: 8px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+
+/* Print settings */
+
+@media print {
+
+    body {
+        background: white;
+        padding: 0;
+    }
+
+    .language-control,
+    .calculator-card,
+    button {
+        display: none !important;
+    }
+
+    .container {
+        max-width: 100%;
+    }
+
+    .header {
+        background: white;
+        color: black;
+        border: 1px solid #ccc;
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+
+    #breakdown {
+        display: block !important;
+    }
+}
