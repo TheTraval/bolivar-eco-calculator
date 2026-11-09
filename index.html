@@ -3,11 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Bolívar Eco-Calculator</title>
 </head>
+
 <body>
 
     <h1>Bolívar Eco-Calculator</h1>
+
+    <h2>Transportation</h2>
+
+    <label for="transport">How do you travel to school?</label>
+
+    <select id="transport">
+        <option value="car">Private Car</option>
+        <option value="bus">Bus</option>
+        <option value="carpool">Carpool</option>
+        <option value="walk">Walking / Bicycle</option>
+    </select>
+
+    <br><br>
+
+    <label for="paper">Sheets of paper used per day:</label>
+    <input type="number" id="paper" min="0" value="0">
+
+    <br><br>
+
+    <label for="recycling">Level of recycling:</label>
+
+    <select id="recycling">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+    </select>
+
+    <br><br>
+
+    <button onclick="calculateImpact()">Calculate</button>
+
+    <h2>Results</h2>
+
+    <p id="result">Your weekly CO₂ emissions will appear here.</p>
+
+    <script>
+        function calculateImpact() {
+
+            // -------------------------
+            // TRANSPORTATION
+            // -------------------------
+
+            const transport = document.getElementById("transport").value;
+
+            let dailyTransportCO2 = 0;
+
+            // Estimated CO2 per school day in kg
+            if (transport === "car") {
+                dailyTransportCO2 = 4.6;
+            } 
+            else if (transport === "bus") {
+                dailyTransportCO2 = 1.5;
+            } 
+            else if (transport === "carpool") {
+                dailyTransportCO2 = 2.3;
+            } 
+            else if (transport === "walk") {
+                dailyTransportCO2 = 0;
+            }
+
+            // 5 school days per week
+            const weeklyTransportCO2 = dailyTransportCO2 * 5;
+
+
+            // -------------------------
+            // PAPER
+            // -------------------------
+
+            const paper = Number(document.getElementById("paper").value);
+
+            // Estimated CO2 per sheet of paper
+            const co2PerSheet = 0.005;
+
+            // Paper used during one school week
+            const weeklyPaper = paper * 5;
+
+            const weeklyPaperCO2 = weeklyPaper * co2PerSheet;
+
+
+            // -------------------------
+            // RECYCLING
+            // -------------------------
+
+            const recycling = document.getElementById("recycling").value;
+
+            let recyclingReduction = 0;
+
+            if (recycling === "low") {
+                recyclingReduction = 0;
+            } 
+            else if (recycling === "medium") {
+                recyclingReduction = 0.10;
+            } 
+            else if (recycling === "high") {
+                recyclingReduction = 0.20;
+            }
+
+
+            // -------------------------
+            // TOTAL CO2
+            // -------------------------
+
+            const totalBeforeRecycling =
+                weeklyTransportCO2 + weeklyPaperCO2;
+
+            const recyclingSavings =
+                totalBeforeRecycling * recyclingReduction;
+
+            const totalCO2 =
+                totalBeforeRecycling - recyclingSavings;
+
+
+            // -------------------------
+            // DISPLAY RESULT
+            // -------------------------
+
+            document.getElementById("result").textContent =
+                "Estimated weekly CO₂ emissions: " +
+                totalCO2.toFixed(2) +
+                " kg";
+        }
+    </script>
 
 </body>
 </html>
